@@ -1,38 +1,39 @@
 #!/usr/bin/python
 
 #import all of the required modules 
-    import sys
-    import time
-    from neopixel import *
-    import Adafruit_MCP9808.MCP9808 as MCP9808
-    from tentacle_pi.TSL2561 import TSL2561
-    import csv
-    import RPi.GPIO as GPIO
-    from SHT31 import *
-    import ConfigParser
+import sys
+import time
+from neopixel import *
+import Adafruit_MCP9808.MCP9808 as MCP9808
+from tentacle_pi.TSL2561 import TSL2561
+import csv
+import RPi.GPIO as GPIO
+sys.path.append("/home/pi/SHT31_PAE")
+from SHT31 import *
+import ConfigParser
 
 #arguments will be in a separate .ini file which is read in and parsed
 
-    inputfile=str(sys.argv[1])
-    Config = ConfigParser.ConfigParser()
-    Config.read(inputfile)
-    brightness=Config.getint("settings", "brightness")
-    R=Config.getint("settings", "R")
-    G=Config.getint("settings", "G")
-    B=Config.getint("settings", "B")
-    W=Config.getint("settings", "W")
-    onTime=Config.getint("settings", "onTime")
-    offTime=Config.getint("settings", "offTime")
-    checkTime=Config.getfloat("settings", "checkTime")
-    outfile_name=Config.get("settings", "outfile_name")
+inputfile=str(sys.argv[1])
+Config = ConfigParser.ConfigParser()
+Config.read(inputfile)
+brightness=Config.getint("settings", "brightness")
+R=Config.getint("settings", "R")
+G=Config.getint("settings", "G")
+B=Config.getint("settings", "B")
+W=Config.getint("settings", "W")
+onTime=Config.getint("settings", "onTime")
+offTime=Config.getint("settings", "offTime")
+checkTime=Config.getfloat("settings", "checkTime")
+outfile_name=Config.get("settings", "outfile_name")
     
 #set up LED indicator light
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(16, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(16, GPIO.OUT)
 
 #setup Heater
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(23, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(23, GPIO.OUT)
 
 #set up light moniter
 tsl = TSL2561(0x39,"/dev/i2c-1")
