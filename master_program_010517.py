@@ -25,7 +25,7 @@ W=Config.getint("settings", "W")
 onTime=Config.getint("settings", "onTime")
 offTime=Config.getint("settings", "offTime")
 checkTime=Config.getfloat("settings", "checkTime")
-outfile_name=Config.get("settings", "outfile_name")
+outFile=Config.get("settings", "outfile_name")
     
 #set up LED indicator light
 GPIO.setmode(GPIO.BCM)
