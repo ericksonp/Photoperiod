@@ -97,7 +97,7 @@ while True:
     currlux=tsl.lux()
     print "Lux is", currlux
     print
-    if Pulse = True:
+    if Pulse == True:
         if Pulse_on <= time_in_hours < Pulse_off:
             print "Pulsing"
             lights="Pulse"
