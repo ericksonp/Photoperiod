@@ -104,4 +104,4 @@ while True:
             strip.show()
     wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights])
     c.flush()
-    time.sleep(checkTime - ((time.time() - starttime) % 60.0))
+    time.sleep(checkTime - ((time.time() - loopstart) % 60.0))
