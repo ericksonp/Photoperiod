@@ -97,18 +97,26 @@ while True:
     currlux=tsl.lux()
     print "Lux is", currlux
     print
-    if Pulse == True:
-        if onTime <= time_in_hours < offTime:
-            print ' Lights on!'
-            lights=True
+    if Pulse = True:
+        if Pulse_on <= time_in_hours < Pulse_off:
+            print "Pulsing"
+            lights="Pulse"
             GPIO.output(16, True)
             for i in range(LED_COUNT):
-                strip.setPixelColor(i,Color(G,B,R,W))
+                strip.setPixelColor(i,Color(Pulse_G,Pulse_B,Pulse_R,Pulse_W))
                 strip.show()
+            
+    elif onTime <= time_in_hours < offTime:
+        print ' Lights on!'
+        lights="on"
+        GPIO.output(16, True)
+        for i in range(LED_COUNT):
+            strip.setPixelColor(i,Color(G,B,R,W))
+            strip.show()
     else:
         print 'Lights off!, LED off'
         GPIO.output(16,False)
-        lights=False
+        lights="Off"
         for i in range(LED_COUNT):
             strip.setPixelColor(i,Color(0,0,0,0))
             strip.show()
