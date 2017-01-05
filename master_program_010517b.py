@@ -73,7 +73,7 @@ sensor.begin()
 #make a datafile
 c =(open(outFile, 'wb'))
 wrtr = csv.writer(c)
-wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours])
+wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours"])
 
 #start checking the time
 while True:
