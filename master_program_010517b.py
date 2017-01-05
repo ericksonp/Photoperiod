@@ -103,7 +103,7 @@ while True:
             lights="Pulse"
             GPIO.output(16, True)
             for i in range(LED_COUNT):
-                strip.setPixelColor(i,Color(Pulse_G,Pulse_B,Pulse_R,Pulse_W))
+                strip.setPixelColor(i,Color(Pulse_G,Pulse_R,Pulse_B,Pulse_W))
                 strip.show()
             
     elif onTime <= time_in_hours < offTime:
@@ -111,7 +111,7 @@ while True:
         lights="on"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
-            strip.setPixelColor(i,Color(G,B,R,W))
+            strip.setPixelColor(i,Color(G,R,B,W))
             strip.show()
     else:
         print 'Lights off!, LED off'
