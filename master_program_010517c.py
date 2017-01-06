@@ -22,22 +22,22 @@ R=Config.getint("settings", "R") #red spectrum for main lights on
 G=Config.getint("settings", "G") #green spectrum for main lights on
 B=Config.getint("settings", "B") #blue spectrum for main lights on
 W=Config.getint("settings", "W") #white spectrum for main lights on
-onTime=Config.getfloat("settings", "onTime") #time that lights will reach full intensity
-offTime=Config.getfloat("settings", "offTime") #time that lights will stop being at full intensity
-checkTime=Config.getfloat("settings", "checkTime") #frequency of checking time and recording data (usually 60 seconds)
+onTime=Config.getfloat("settings", "onTime") #time in hours that lights will reach full intensity
+offTime=Config.getfloat("settings", "offTime") #time in hours that lights will stop being at full intensity
+checkTime=Config.getfloat("settings", "checkTime") #frequency in seconds of checking time and recording data (usually 60 seconds)
 outFile=Config.get("settings", "outfile_name") #name of output file that will save data log
 Pulse=Config.getboolean("pulse", "Pulse") #True/false for whether a light pulse will be used
-Pulse_on=Config.getfloat("pulse", "Pulse_on") #Time that pulse will start (in hours)
-Pulse_off=Config.getfloat("pulse", "Pulse_off") #Time that pulse will end (in hours)
+Pulse_on=Config.getfloat("pulse", "Pulse_on") #Time in hours that pulse will start 
+Pulse_off=Config.getfloat("pulse", "Pulse_off") #Time in hours that pulse will end 
 Pulse_R=Config.getint("pulse", "Pulse_R") #red spectrum for pulse
 Pulse_G=Config.getint("pulse", "Pulse_G") #green spectrum for pulse
 Pulse_B=Config.getint("pulse", "Pulse_B") #blue spectrum for pulse
 Pulse_W=Config.getint("pulse", "Pulse_W") #white spectrum for pulse
 Ramp_on=Config.getboolean("ramp_on", "Ramp_on") #true/false for whether a ramp will be used
-ramp_ontime=Config.getfloat("ramp_on", "Ramp_ontime") #time that lights will start ramping on
+ramp_ontime=Config.getfloat("ramp_on", "Ramp_ontime") #time in hours that lights will start ramping on
 Heat=Config.getboolean("heat", "Heat") #true false for whether the heater will be used
-heatOn=Config.getfloat("heat", "heatOn") #time that heater should turn on
-heatOff=Config.getfloat("heat", "heatOff") #time that heater should turn off 
+heatOn=Config.getfloat("heat", "heatOn") #time in hours that heater should turn on
+heatOff=Config.getfloat("heat", "heatOff") #time in hours that heater should turn off 
 
 #set up LED indicator light
 GPIO.setmode(GPIO.BCM)
