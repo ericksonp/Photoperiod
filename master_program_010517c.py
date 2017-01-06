@@ -97,11 +97,11 @@ while True:
     #turn heat on if needed
     if Heat == True and heatOn <= time_in_hours <heatOff:
         GPIO.output(23, True)
-        Print "Heat on!"
+        print "Heat on!"
         heater=True
     else:
         GPIO.output(23, False)
-        Print "Heat off"
+        print "Heat off"
         heater=False
     #read sensors
     currtemp=sensor.readTempC()
