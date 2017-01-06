@@ -14,7 +14,7 @@ import ConfigParser
 
 #arguments will be in a separate .ini file (sys.argv[1]) which is read in and parsed to get different argument types
 
-inputfile=str(sys.argv[1])
+inputfile=str(sys.argv[1]) #the input .ini file is given as the first argument when the python script is called
 Config = ConfigParser.ConfigParser()
 Config.read(inputfile)
 brightness=Config.getint("settings", "brightness") #brightness for main lights on
@@ -77,17 +77,18 @@ sensor.begin()
 #make a datafile
 c =(open(outFile, 'wb'))
 wrtr = csv.writer(c)
+#write a header column
 wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours", "R", "G", "B", "W", "Heater"])
 
 #start checking the time
 while True:
-    #what time is it?
+    #determine current time
     loopstart=time.time()
     now= time.localtime(time.time())
     timeStamp=time.strftime("%y-%m-%d %H:%M:%S", now)
     print timeStamp
 
-    #apply calculation to time
+    #apply calculation to time to determine time in hours as a decimal
     hour= float(time.strftime("%H "))
     minute= float(time.strftime("%M "))
     second=float(time.strftime("%S "))
@@ -103,7 +104,7 @@ while True:
         GPIO.output(23, False)
         print "Heat off"
         heater=False
-    #read sensors
+    #read sensors for temperature, humidity, and light intensity
     currtemp=sensor.readTempC()
     print "MCP9808 Temperature is", currtemp
     SHT31reading=read_SHT31()
@@ -124,6 +125,7 @@ while True:
         currG=Pulse_G
         currB=Pulse_B
         currW=Pulse_W
+    
     #then check for ramping on
     elif Ramp_on == True and ramp_ontime <= time_in_hours < onTime:
         print "Ramping on"
@@ -142,6 +144,7 @@ while True:
         currG=tempG
         currB=tempB
         currW=tempW
+        
     #then check if lights are on main cycle     
     elif onTime <= time_in_hours < offTime:
         print ' Lights on!'
@@ -184,8 +187,8 @@ while True:
         currG=0
         currB=0
         currW=0
-    #write all the current data
+    #write all the current data to a new line in data file
     wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
     c.flush()
-    # this will make it so that loop is initiated exactly every checktime seconds by accounting for the elapsed time
+    # determine how much time to wait so that loop is executed based on checkTime seconds
     time.sleep(checkTime - ((time.time() - loopstart) % 60.0)) 
