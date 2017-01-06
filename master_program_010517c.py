@@ -40,6 +40,20 @@ ramp_offtime=Config.getfloat("ramp_off", "Ramp_offtime") #time in hours that lig
 Heat=Config.getboolean("heat", "Heat") #true false for whether the heater will be used
 heatOn=Config.getfloat("heat", "heatOn") #time in hours that heater should turn on
 heatOff=Config.getfloat("heat", "heatOff") #time in hours that heater should turn off 
+color2=Config.getboolean("color2", "color2_used") #true false for using a second color
+color2_offtime=Config.getfloat("color2", "color2_off") #off time for second color
+R2=config.getint("color2" "R2") #red spectrum for second color
+G2=config.getint("color2" "G2") #green spectrum for second color
+B2=config.getint("color2" "B2") #blue spectrum for second color
+W2=config.getint("color2" "W2") #white spectrum for second color
+
+color3=Config.getboolean("color3", "color3_used") #true false for using a third color
+color3_offtime=Config.getfloat("color3", "color3_off") #off time for a third color
+R3=config.getint("color3" "R3") #red spectrum for third color
+G3=config.getint("color3" "G3") #green spectrum for third color
+B3=config.getint("color3" "B3") #blue spectrum for third color
+W3=config.getint("color3" "W3") #white spectrum for third color
+
 
 #set up LED indicator light
 GPIO.setmode(GPIO.BCM)
@@ -157,6 +171,32 @@ while True:
         currG=G
         currB=B
         currW=W
+        
+    #then check if lights should be on color2    
+    elif color2==True and offTime <= time_in_hours < color2_offtime:
+        print ' Lights on!'
+        lights="on, color2"
+        GPIO.output(16, True)
+        for i in range(LED_COUNT):
+            strip.setPixelColor(i,Color(G2,R2,B2,W2))
+            strip.show()
+        currR=R2
+        currG=G2
+        currB=B2
+        currW=W2
+        
+    #then check if lights should be on color3    
+    elif color3 ==True and color2_offtime <= time_in_hours < color3_offtime:
+        print ' Lights on!'
+        lights="on, color3"
+        GPIO.output(16, True)
+        for i in range(LED_COUNT):
+            strip.setPixelColor(i,Color(G3,R3,B3,W3))
+            strip.show()
+        currR=R3
+        currG=G3
+        currB=B3
+        currW=W3
     #then check for ramping off
     elif Ramp_off == True and offTime <= time_in_hours < ramp_offtime:
         print "Ramping off"
