@@ -116,7 +116,7 @@ while True:
             strip.show()
 
     #then check for ramping
-    elif Ramp == True and rampOn < time_in_hours < onTime:
+    elif Ramp_on == True and rampOn < time_in_hours < onTime:
         print "Ramping"
         Ramp_time=onTime - Ramp_ontime #total time that will be spent ramping
         fade=(time_in_hours-Ramp_ontime)/Ramp_time #proportion of ramping that is completed
