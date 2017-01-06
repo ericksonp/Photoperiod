@@ -173,7 +173,7 @@ while True:
         currW=W
         
     #then check if lights should be on color2    
-    elif offTime <= time_in_hours < color2_offtime:
+    elif color2==True and offTime <= time_in_hours < color2_offtime:
         print ' Lights on!'
         lights="on, color2"
         GPIO.output(16, True)
@@ -184,6 +184,19 @@ while True:
         currG=G2
         currB=B2
         currW=W2
+        
+    #then check if lights should be on color3    
+    elif color3 ==True and color2_offtime <= time_in_hours < color3_offtime:
+        print ' Lights on!'
+        lights="on, color3"
+        GPIO.output(16, True)
+        for i in range(LED_COUNT):
+            strip.setPixelColor(i,Color(G3,R3,B3,W3))
+            strip.show()
+        currR=R3
+        currG=G3
+        currB=B3
+        currW=W3
     #then check for ramping off
     elif Ramp_off == True and offTime <= time_in_hours < ramp_offtime:
         print "Ramping off"
