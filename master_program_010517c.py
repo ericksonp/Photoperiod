@@ -8,7 +8,7 @@ import Adafruit_MCP9808.MCP9808 as MCP9808
 from tentacle_pi.TSL2561 import TSL2561
 import csv
 import RPi.GPIO as GPIO
-sys.path.append("/home/pi/SHT31_PAE")
+sys.path.append("/home/pi/SHT31_PAE")#adds the custom SHT31 function
 from SHT31 import *
 import ConfigParser
 
@@ -17,7 +17,7 @@ import ConfigParser
 inputfile=str(sys.argv[1]) #the input .ini file is given as the first argument when the python script is called
 Config = ConfigParser.ConfigParser()
 Config.read(inputfile)
-brightness=Config.getint("settings", "brightness") #brightness for main lights on
+brightness=Config.getint("settings", "brightness") #brightness for main lights on. This will be passed to all steps, so further brightness must be adjusted via the color levels.
 R=Config.getint("settings", "R") #red spectrum for main lights on
 G=Config.getint("settings", "G") #green spectrum for main lights on
 B=Config.getint("settings", "B") #blue spectrum for main lights on
@@ -55,11 +55,11 @@ B3=config.getint("color3" "B3") #blue spectrum for third color
 W3=config.getint("color3" "W3") #white spectrum for third color
 
 
-#set up LED indicator light
+#set up LED indicator light via GPIO 16 (turns on whenever lights are on)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(16, GPIO.OUT)
 
-#setup Heater
+#setup Heater via Powerswitch on GPIO 23
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(23, GPIO.OUT)
 
@@ -69,11 +69,11 @@ tsl.enable_autogain()
 tsl.set_time(0x00)
 
 #specify LED configuration
-LED_COUNT      = 24   # Number of LED pixels (always 24 in ring).
-LED_PIN        = 18                 # GPIO pin connected to the pixels (must support PWM!).
+LED_COUNT      = 24                 # Number of LED pixels (always 24 in ring).
+LED_PIN        = 18                 # GPIO pin connected to the pixels (must support PWM-always 18!).
 LED_FREQ_HZ    = 800000             # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 5                  # DMA channel to use for generating signal (try 5)
-LED_BRIGHTNESS = brightness  # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = brightness         # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False              # True to invert the signal (when using NPN transistor
 LED_CHANNEL    = 0
 LED_STRIP      = ws.SK6812_STRIP_RGBW	
@@ -97,7 +97,7 @@ wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Ligh
 #start checking the time
 while True:
     #determine current time
-    loopstart=time.time()
+    loopstart=time.time() #record start time of loop so that total loop time can be precisely adjusted
     now= time.localtime(time.time())
     timeStamp=time.strftime("%y-%m-%d %H:%M:%S", now)
     print timeStamp
@@ -140,7 +140,7 @@ while True:
         currB=Pulse_B
         currW=Pulse_W
     
-    #then check for ramping on
+    #then check for ramping on. Ramp lights are automatically same as main light color
     elif Ramp_on == True and ramp_ontime <= time_in_hours < onTime:
         print "Ramping on"
         Ramp_time=onTime - ramp_ontime #total time that will be spent ramping
@@ -152,7 +152,7 @@ while True:
         tempW=int(float(W)*fade) #calculate a white value based on proporition of ramping completed
         for i in range(LED_COUNT):
             GPIO.output(16, True)
-            strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
+            strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW)) #assigns a temporary modulated color value based on ramp progression
             strip.show()
         currR=tempR
         currG=tempG
@@ -165,7 +165,7 @@ while True:
         lights="on"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
-            strip.setPixelColor(i,Color(G,R,B,W))
+            strip.setPixelColor(i,Color(G,R,B,W)) #sets LEDs to main color
             strip.show()
         currR=R
         currG=G
@@ -178,7 +178,7 @@ while True:
         lights="on, color2"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
-            strip.setPixelColor(i,Color(G2,R2,B2,W2))
+            strip.setPixelColor(i,Color(G2,R2,B2,W2)) #sets strip to second color scheme
             strip.show()
         currR=R2
         currG=G2
@@ -191,13 +191,13 @@ while True:
         lights="on, color3"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
-            strip.setPixelColor(i,Color(G3,R3,B3,W3))
+            strip.setPixelColor(i,Color(G3,R3,B3,W3)) #sets lights to third color scheme
             strip.show()
         currR=R3
         currG=G3
         currB=B3
         currW=W3
-    #then check for ramping off
+    #then check for ramping off. Ramp will be for main light color. Need to add option for different color
     elif Ramp_off == True and offTime <= time_in_hours < ramp_offtime:
         print "Ramping off"
         Ramp_time=ramp_offtime - offTime #total time that will be spent ramping down
