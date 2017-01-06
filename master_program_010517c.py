@@ -35,6 +35,8 @@ Pulse_B=Config.getint("pulse", "Pulse_B") #blue spectrum for pulse
 Pulse_W=Config.getint("pulse", "Pulse_W") #white spectrum for pulse
 Ramp_on=Config.getboolean("ramp_on", "Ramp_on") #true/false for whether a ramp will be used
 ramp_ontime=Config.getfloat("ramp_on", "Ramp_ontime") #time in hours that lights will start ramping on
+Ramp_off=Config.getboolean("ramp_off", "Ramp_off") #true/false for whether a ramp will be used
+ramp_offtime=Config.getfloat("ramp_off", "Ramp_offtime") #time in hours that lights will complete ramping
 Heat=Config.getboolean("heat", "Heat") #true false for whether the heater will be used
 heatOn=Config.getfloat("heat", "heatOn") #time in hours that heater should turn on
 heatOff=Config.getfloat("heat", "heatOff") #time in hours that heater should turn off 
@@ -122,9 +124,9 @@ while True:
         currG=Pulse_G
         currB=Pulse_B
         currW=Pulse_W
-    #then check for ramping
+    #then check for ramping on
     elif Ramp_on == True and ramp_ontime <= time_in_hours < onTime:
-        print "Ramping"
+        print "Ramping on"
         Ramp_time=onTime - ramp_ontime #total time that will be spent ramping
         fade=(time_in_hours-ramp_ontime)/Ramp_time #proportion of ramping that is completed
         lights="increasing"
@@ -152,6 +154,24 @@ while True:
         currG=G
         currB=B
         currW=W
+    #then check for ramping off
+    elif Ramp_off == True and offTime <= time_in_hours < ramp_offtime:
+        print "Ramping off"
+        Ramp_time=ramp_offtime - offTime #total time that will be spent ramping down
+        fade=(ramp_offtime-time_in_hours)/Ramp_time #proportion of ramping that is uncompleted
+        lights="decreasing"
+        tempR=int(float(R)*fade) #calculate a red value based on proporition of ramping completed
+        tempG=int(float(G)*fade) #calculate a green value based on proporition of ramping completed
+        tempB=int(float(B)*fade) #calculate a blue value based on proporition of ramping completed
+        tempW=int(float(W)*fade) #calculate a white value based on proporition of ramping completed
+        for i in range(LED_COUNT):
+            GPIO.output(16, True)
+            strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
+            strip.show()
+        currR=tempR
+        currG=tempG
+        currB=tempB
+        currW=tempW
     #if none of the above conditions are true, lights should be off
     else:
         print 'Lights off!, LED off'
