@@ -75,7 +75,7 @@ sensor.begin()
 #make a datafile
 c =(open(outFile, 'wb'))
 wrtr = csv.writer(c)
-wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours"])
+wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours", "R", "G", "B", "W"])
 
 #start checking the time
 while True:
@@ -114,9 +114,12 @@ while True:
         for i in range(LED_COUNT):
             strip.setPixelColor(i,Color(Pulse_G,Pulse_R,Pulse_B,Pulse_W))
             strip.show()
-
+        currR=Pulse_R
+        currG=Pulse_G
+        currB=Pulse_B
+        currW=Pulse_W
     #then check for ramping
-    elif Ramp_on == True and ramp_ontime < time_in_hours < onTime:
+    elif Ramp_on == True and ramp_ontime <= time_in_hours < onTime:
         print "Ramping"
         Ramp_time=onTime - ramp_ontime #total time that will be spent ramping
         fade=(time_in_hours-ramp_ontime)/Ramp_time #proportion of ramping that is completed
@@ -129,7 +132,10 @@ while True:
             GPIO.output(16, True)
             strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
             strip.show()
-
+        currR=tempR
+        currG=tempG
+        currB=tempB
+        currW=tempW
     #then check if lights are on main cycle     
     elif onTime <= time_in_hours < offTime:
         print ' Lights on!'
@@ -138,7 +144,10 @@ while True:
         for i in range(LED_COUNT):
             strip.setPixelColor(i,Color(G,R,B,W))
             strip.show()
-
+        currR=R
+        currG=G
+        currB=B
+        currW=W
     #if none of the above conditions are true, lights should be off
     else:
         print 'Lights off!, LED off'
@@ -147,8 +156,12 @@ while True:
         for i in range(LED_COUNT):
             strip.setPixelColor(i,Color(0,0,0,0))
             strip.show()
+        currR=0
+        currG=0
+        currB=0
+        currW=0
     #write all the current data
-    wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours])
+    wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW])
     c.flush()
     # this will make it so that loop is initiated exactly ever 60 seconds by accounting for the elapsed time
     time.sleep(checkTime - ((time.time() - loopstart) % 60.0)) 
