@@ -40,6 +40,13 @@ ramp_offtime=Config.getfloat("ramp_off", "Ramp_offtime") #time in hours that lig
 Heat=Config.getboolean("heat", "Heat") #true false for whether the heater will be used
 heatOn=Config.getfloat("heat", "heatOn") #time in hours that heater should turn on
 heatOff=Config.getfloat("heat", "heatOff") #time in hours that heater should turn off 
+color2=Config.getboolean("color2", "color2_used") #true false for using a second color
+color2_off=Config.getfloat("color2", "color2_off") #off time for second color
+R2=config.getint("color2" "R2") #red spectrum for second color
+G2=config.getint("color2" "G2") #green spectrum for second color
+B2=config.getint("color2" "B2") #blue spectrum for second color
+W2=config.getint("color2" "W2") #white spectrum for second color
+
 
 #set up LED indicator light
 GPIO.setmode(GPIO.BCM)
