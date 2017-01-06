@@ -88,7 +88,8 @@ while True:
     #apply calculation to time
     hour= float(time.strftime("%H "))
     minute= float(time.strftime("%M "))
-    time_in_hours=hour+minute/60
+    second=float(time.strftime("%S "))
+    time_in_hours=hour+minute/60+second/3600
     print "time in hours is", time_in_hours
 
     #turn heat on if needed
