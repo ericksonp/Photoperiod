@@ -75,7 +75,7 @@ sensor.begin()
 #make a datafile
 c =(open(outFile, 'wb'))
 wrtr = csv.writer(c)
-wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours", "R", "G", "B", "W"])
+wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours", "R", "G", "B", "W", "Heater"])
 
 #start checking the time
 while True:
@@ -94,10 +94,13 @@ while True:
 
     #turn heat on if needed
     if Heat == True and heatOn <= time_in_hours <heatOff:
-            GPIO.output(23, True)
+        GPIO.output(23, True)
+        Print "Heat on!"
+        heater=True
     else:
         GPIO.output(23, False)
-
+        Print "Heat off"
+        heater=False
     #read sensors
     currtemp=sensor.readTempC()
     print "MCP9808 Temperature is", currtemp
@@ -162,7 +165,7 @@ while True:
         currB=0
         currW=0
     #write all the current data
-    wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW])
+    wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
     c.flush()
-    # this will make it so that loop is initiated exactly ever 60 seconds by accounting for the elapsed time
+    # this will make it so that loop is initiated exactly every checktime seconds by accounting for the elapsed time
     time.sleep(checkTime - ((time.time() - loopstart) % 60.0)) 
