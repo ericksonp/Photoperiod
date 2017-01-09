@@ -122,7 +122,7 @@ while True:
     print "time in hours is", time_in_hours
 
     #turn heat on if needed
-    if Heat == True and heatOn <= time_in_hours <heatOff:
+    if Heat == True and heatOn <= time_in_hours < heatOff:
         GPIO.output(23, True)
         print "Heat on!"
         heater=True
