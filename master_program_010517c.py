@@ -41,18 +41,18 @@ Heat=Config.getboolean("heat", "Heat") #true false for whether the heater will b
 heatOn=Config.getfloat("heat", "heatOn") #time in hours that heater should turn on
 heatOff=Config.getfloat("heat", "heatOff") #time in hours that heater should turn off 
 color2=Config.getboolean("color2", "color2_used") #true false for using a second color
-color2_offtime=Config.getfloat("color2", "color2_off") #off time for second color
-R2=config.getint("color2" "R2") #red spectrum for second color
-G2=config.getint("color2" "G2") #green spectrum for second color
-B2=config.getint("color2" "B2") #blue spectrum for second color
-W2=config.getint("color2" "W2") #white spectrum for second color
+color2_offtime=Config.getfloat("color2", "color2_offtime") #off time for second color
+R2=Config.getint("color2" "R2") #red spectrum for second color
+G2=Config.getint("color2" "G2") #green spectrum for second color
+B2=Config.getint("color2" "B2") #blue spectrum for second color
+W2=Config.getint("color2" "W2") #white spectrum for second color
 
 color3=Config.getboolean("color3", "color3_used") #true false for using a third color
-color3_offtime=Config.getfloat("color3", "color3_off") #off time for a third color
-R3=config.getint("color3" "R3") #red spectrum for third color
-G3=config.getint("color3" "G3") #green spectrum for third color
-B3=config.getint("color3" "B3") #blue spectrum for third color
-W3=config.getint("color3" "W3") #white spectrum for third color
+color3_offtime=Config.getfloat("color3", "color3_offtime") #off time for a third color
+R3=Config.getint("color3" "R3") #red spectrum for third color
+G3=Config.getint("color3" "G3") #green spectrum for third color
+B3=Config.getint("color3" "B3") #blue spectrum for third color
+W3=Config.getint("color3" "W3") #white spectrum for third color
 
 
 #set up LED indicator light via GPIO 16 (turns on whenever lights are on)
