@@ -13,10 +13,11 @@ from SHT31 import *
 import ConfigParser
 
 #arguments will be in a separate .ini file (sys.argv[1]) which is read in and parsed to get different argument types
-
 inputfile=str(sys.argv[1]) #the input .ini file is given as the first argument when the python script is called
 Config = ConfigParser.ConfigParser()
 Config.read(inputfile)
+
+#Main light cycle
 brightness=Config.getint("settings", "brightness") #brightness for main lights on. This will be passed to all steps, so further brightness must be adjusted via the color levels.
 R=Config.getint("settings", "R") #red spectrum for main lights on
 G=Config.getint("settings", "G") #green spectrum for main lights on
@@ -26,6 +27,8 @@ onTime=Config.getfloat("settings", "onTime") #time in hours that lights will rea
 offTime=Config.getfloat("settings", "offTime") #time in hours that lights will stop being at full intensity
 checkTime=Config.getfloat("settings", "checkTime") #frequency in seconds of checking time and recording data (usually 60 seconds)
 outFile=Config.get("settings", "outfile_name") #name of output file that will save data log
+
+#Pulse
 Pulse=Config.getboolean("pulse", "Pulse") #True/false for whether a light pulse will be used
 Pulse_on=Config.getfloat("pulse", "Pulse_on") #Time in hours that pulse will start 
 Pulse_off=Config.getfloat("pulse", "Pulse_off") #Time in hours that pulse will end 
@@ -33,13 +36,21 @@ Pulse_R=Config.getint("pulse", "Pulse_R") #red spectrum for pulse
 Pulse_G=Config.getint("pulse", "Pulse_G") #green spectrum for pulse
 Pulse_B=Config.getint("pulse", "Pulse_B") #blue spectrum for pulse
 Pulse_W=Config.getint("pulse", "Pulse_W") #white spectrum for pulse
+
+#Ramp on
 Ramp_on=Config.getboolean("ramp_on", "Ramp_on") #true/false for whether a ramp will be used
 ramp_ontime=Config.getfloat("ramp_on", "Ramp_ontime") #time in hours that lights will start ramping on
+
+#Ramp off
 Ramp_off=Config.getboolean("ramp_off", "Ramp_off") #true/false for whether a ramp will be used
 ramp_offtime=Config.getfloat("ramp_off", "Ramp_offtime") #time in hours that lights will complete ramping
+
+#Heat
 Heat=Config.getboolean("heat", "Heat") #true false for whether the heater will be used
 heatOn=Config.getfloat("heat", "heatOn") #time in hours that heater should turn on
 heatOff=Config.getfloat("heat", "heatOff") #time in hours that heater should turn off 
+
+#color2
 color2=Config.getboolean("color2", "color2_used") #true false for using a second color
 color2_offtime=Config.getfloat("color2", "color2_offtime") #off time for second color
 R2=Config.getint("color2", "R2") #red spectrum for second color
@@ -47,13 +58,13 @@ G2=Config.getint("color2", "G2") #green spectrum for second color
 B2=Config.getint("color2", "B2") #blue spectrum for second color
 W2=Config.getint("color2", "W2") #white spectrum for second color
 
+#color3
 color3=Config.getboolean("color3", "color3_used") #true false for using a third color
 color3_offtime=Config.getfloat("color3", "color3_offtime") #off time for a third color
 R3=Config.getint("color3", "R3") #red spectrum for third color
 G3=Config.getint("color3", "G3") #green spectrum for third color
 B3=Config.getint("color3", "B3") #blue spectrum for third color
 W3=Config.getint("color3", "W3") #white spectrum for third color
-
 
 #set up LED indicator light via GPIO 16 (turns on whenever lights are on)
 GPIO.setmode(GPIO.BCM)
@@ -96,10 +107,11 @@ wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Ligh
 
 #start checking the time
 while True:
+    
     #determine current time
     loopstart=time.time() #record start time of loop so that total loop time can be precisely adjusted
-    now= time.localtime(time.time())
-    timeStamp=time.strftime("%y-%m-%d %H:%M:%S", now)
+    now= time.localtime(time.time()) #current time
+    timeStamp=time.strftime("%y-%m-%d %H:%M:%S", now) #break time into H, M, S
     print timeStamp
 
     #apply calculation to time to determine time in hours as a decimal
@@ -118,6 +130,7 @@ while True:
         GPIO.output(23, False)
         print "Heat off"
         heater=False
+        
     #read sensors for temperature, humidity, and light intensity
     currtemp=sensor.readTempC()
     print "MCP9808 Temperature is", currtemp
@@ -140,7 +153,7 @@ while True:
         currB=Pulse_B
         currW=Pulse_W
     
-    #then check for ramping on. Ramp lights are automatically same as main light color
+    #then check for ramping on. Ramp lights are automatically same as first color
     elif Ramp_on == True and ramp_ontime <= time_in_hours < onTime:
         print "Ramping on"
         Ramp_time=onTime - ramp_ontime #total time that will be spent ramping
@@ -162,7 +175,7 @@ while True:
     #then check if lights are on main cycle     
     elif onTime <= time_in_hours < offTime:
         print ' Lights on!'
-        lights="on"
+        lights="on, main"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
             strip.setPixelColor(i,Color(G,R,B,W)) #sets LEDs to main color
@@ -197,16 +210,28 @@ while True:
         currG=G3
         currB=B3
         currW=W3
-    #then check for ramping off. Ramp will be for main light color. Need to add option for different color
+        
+    #then check for ramping off. Ramping off will occur for last used color
     elif Ramp_off == True and offTime <= time_in_hours < ramp_offtime:
         print "Ramping off"
         Ramp_time=ramp_offtime - offTime #total time that will be spent ramping down
         fade=(ramp_offtime-time_in_hours)/Ramp_time #proportion of ramping that is uncompleted
         lights="decreasing"
-        tempR=int(float(R)*fade) #calculate a red value based on proporition of ramping completed
-        tempG=int(float(G)*fade) #calculate a green value based on proporition of ramping completed
-        tempB=int(float(B)*fade) #calculate a blue value based on proporition of ramping completed
-        tempW=int(float(W)*fade) #calculate a white value based on proporition of ramping completed
+        if color3 == True:
+            tempR=int(float(R3)*fade) #calculate a red value based on proporition of ramping completed
+            tempG=int(float(G3)*fade) #calculate a green value based on proporition of ramping completed
+            tempB=int(float(B3)*fade) #calculate a blue value based on proporition of ramping completed
+            tempW=int(float(W3)*fade) #calculate a white value based on proporition of ramping completed 
+        elif color2 == True and color3 == False:
+            tempR=int(float(R2)*fade) #calculate a red value based on proporition of ramping completed
+            tempG=int(float(G2)*fade) #calculate a green value based on proporition of ramping completed
+            tempB=int(float(B2)*fade) #calculate a blue value based on proporition of ramping completed
+            tempW=int(float(W2)*fade) #calculate a white value based on proporition of ramping completed
+        else:
+            tempR=int(float(R)*fade) #calculate a red value based on proporition of ramping completed
+            tempG=int(float(G)*fade) #calculate a green value based on proporition of ramping completed
+            tempB=int(float(B)*fade) #calculate a blue value based on proporition of ramping completed
+            tempW=int(float(W)*fade) #calculate a white value based on proporition of ramping completed
         for i in range(LED_COUNT):
             GPIO.output(16, True)
             strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
@@ -215,6 +240,7 @@ while True:
         currG=tempG
         currB=tempB
         currW=tempW
+        
     #if none of the above conditions are true, lights should be off
     else:
         print 'Lights off!, LED off'
@@ -227,8 +253,10 @@ while True:
         currG=0
         currB=0
         currW=0
+        
     #write all the current data to a new line in data file
     wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
     c.flush()
+    
     # determine how much time to wait so that loop is executed based on checkTime seconds
     time.sleep(checkTime - ((time.time() - loopstart) % 60.0)) 
