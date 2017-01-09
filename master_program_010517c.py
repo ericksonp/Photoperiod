@@ -103,7 +103,10 @@ sensor.begin()
 c =(open(outFile, 'wb'))
 wrtr = csv.writer(c)
 #write a header column
-wrtr.writerow(["TimeStamp", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours", "R", "G", "B", "W", "Heater"])
+wrtr.writerow(["TimeStamp", "Elapsed", "MCP9808Temp", "SHT31Temp", "Humidity", "Lux", "Lights", "Time_in_hours", "R", "G", "B", "W", "Heater"])
+
+#determine program start time
+programstart=time.time()
 
 #start checking the time
 while True:
@@ -282,7 +285,8 @@ while True:
         currW=0
         
     #write all the current data to a new line in data file
-    wrtr.writerow([timeStamp,currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
+    elapsedtime=(time.time()-programstart)/3600
+    wrtr.writerow([timeStamp,elapsedtime, currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
     c.flush()
     
     # determine how much time to wait so that loop is executed based on checkTime seconds
