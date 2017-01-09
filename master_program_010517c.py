@@ -187,7 +187,7 @@ while True:
         
     #then check if lights should be on color2    
     elif color2==True and offTime <= time_in_hours < color2_offtime:
-        print ' Lights on!'
+        print ' Lights on color2!'
         lights="on, color2"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
@@ -200,7 +200,7 @@ while True:
         
     #then check if lights should be on color3    
     elif color3 ==True and color2_offtime <= time_in_hours < color3_offtime:
-        print ' Lights on!'
+        print ' Lights on color 3!'
         lights="on, color3"
         GPIO.output(16, True)
         for i in range(LED_COUNT):
