@@ -212,26 +212,53 @@ while True:
         currW=W3
         
     #then check for ramping off. Ramping off will occur for last used color
-    elif Ramp_off == True and offTime <= time_in_hours < ramp_offtime:
+    elif Ramp_off == True and color2 == False and color3 == False and offTime <= time_in_hours < ramp_offtime:
         print "Ramping off"
         Ramp_time=ramp_offtime - offTime #total time that will be spent ramping down
         fade=(ramp_offtime-time_in_hours)/Ramp_time #proportion of ramping that is uncompleted
-        lights="decreasing"
-        if color3 == True:
-            tempR=int(float(R3)*fade) #calculate a red value based on proporition of ramping completed
-            tempG=int(float(G3)*fade) #calculate a green value based on proporition of ramping completed
-            tempB=int(float(B3)*fade) #calculate a blue value based on proporition of ramping completed
-            tempW=int(float(W3)*fade) #calculate a white value based on proporition of ramping completed 
-        elif color2 == True and color3 == False:
-            tempR=int(float(R2)*fade) #calculate a red value based on proporition of ramping completed
-            tempG=int(float(G2)*fade) #calculate a green value based on proporition of ramping completed
-            tempB=int(float(B2)*fade) #calculate a blue value based on proporition of ramping completed
-            tempW=int(float(W2)*fade) #calculate a white value based on proporition of ramping completed
-        else:
-            tempR=int(float(R)*fade) #calculate a red value based on proporition of ramping completed
-            tempG=int(float(G)*fade) #calculate a green value based on proporition of ramping completed
-            tempB=int(float(B)*fade) #calculate a blue value based on proporition of ramping completed
-            tempW=int(float(W)*fade) #calculate a white value based on proporition of ramping completed
+        lights="decreasing main color"
+        tempR=int(float(R)*fade) #calculate a red value based on proporition of ramping completed
+        tempG=int(float(G)*fade) #calculate a green value based on proporition of ramping completed
+        tempB=int(float(B)*fade) #calculate a blue value based on proporition of ramping completed
+        tempW=int(float(W)*fade) #calculate a white value based on proporition of ramping completed
+        for i in range(LED_COUNT):
+            GPIO.output(16, True)
+            strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
+            strip.show()
+        currR=tempR
+        currG=tempG
+        currB=tempB
+        currW=tempW
+    
+    #ramping off if 2 colors:
+    elif Ramp_off == True and color2 == True and color3 == False and color2_offtime <= time_in_hours < ramp_offtime:
+        print "Ramping off color2"
+        Ramp_time=ramp_offtime - color2_offtime #total time that will be spent ramping down
+        fade=(ramp_offtime-time_in_hours)/Ramp_time #proportion of ramping that is uncompleted
+        lights="decreasing color2"
+        tempR=int(float(R2)*fade) #calculate a red value based on proporition of ramping completed
+        tempG=int(float(G2)*fade) #calculate a green value based on proporition of ramping completed
+        tempB=int(float(B2)*fade) #calculate a blue value based on proporition of ramping completed
+        tempW=int(float(W2)*fade) #calculate a white value based on proporition of ramping completed
+        for i in range(LED_COUNT):
+            GPIO.output(16, True)
+            strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
+            strip.show()
+        currR=tempR
+        currG=tempG
+        currB=tempB
+        currW=tempW
+        
+    #ramping off if 3 colors:
+    elif Ramp_off == True and color2 == True and color3 == True and color3_offtime <= time_in_hours < ramp_offtime:
+        print "Ramping off color3"
+        Ramp_time=ramp_offtime - color3_offtime #total time that will be spent ramping down
+        fade=(ramp_offtime-time_in_hours)/Ramp_time #proportion of ramping that is uncompleted
+        lights="decreasing color3"
+        tempR=int(float(R3)*fade) #calculate a red value based on proporition of ramping completed
+        tempG=int(float(G3)*fade) #calculate a green value based on proporition of ramping completed
+        tempB=int(float(B3)*fade) #calculate a blue value based on proporition of ramping completed
+        tempW=int(float(W3)*fade) #calculate a white value based on proporition of ramping completed
         for i in range(LED_COUNT):
             GPIO.output(16, True)
             strip.setPixelColor(i,Color(tempG,tempR,tempB,tempW))
