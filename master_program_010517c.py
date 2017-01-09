@@ -285,8 +285,8 @@ while True:
         currW=0
         
     #write all the current data to a new line in data file
-    elapsedtime=(time.time()-programstart)/3600
-    wrtr.writerow([timeStamp,elapsedtime, currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
+    elapsedtime=(time.time()-programstart)/3600 #Elapsed time in hours since program started
+    wrtr.writerow([timeStamp, elapsedtime, currtemp, SHT31reading[0], SHT31reading[1], currlux, lights, time_in_hours, currR, currG, currB, currW, heater])
     c.flush()
     
     # determine how much time to wait so that loop is executed based on checkTime seconds
